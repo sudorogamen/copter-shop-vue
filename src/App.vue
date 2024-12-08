@@ -222,6 +222,7 @@ export default {
     },
   },
   methods: {
+    //фильт товаров
     filteredItems(items) {
       this.renderItems = items;
     },
