@@ -20,7 +20,7 @@
           </svg>
         </div>
         <div class="header-content-row">
-          <Search/>
+          <Search @searchItems="Itemssearch" :Items="products" />
           <div class="icons">
             <div @click="openCart($event)" class="shopping-cart">
               <span>{{ this.sumBuyItems }}</span>
@@ -36,8 +36,9 @@
     </header>
 
     <main>
-      <ItemsFilter @filteredItems="filteredItems" :Items="products" />
+      <ItemsFilter @filteredItems="Itemsfiltered" :Items="products" />
       <ItemsList @ItemBuy="ItemBuy($event)" :Items="renderItems" />
+
       <ul class="shop-effect"></ul>
     </main>
   </div>
@@ -207,8 +208,11 @@ export default {
         },
       ],
       renderItems: [],
+      filteredItems: [],
       buyItems: [],
+      searchItems: [],
       sumBuyItems: 0,
+      addOptions:null
     };
   },
   props: {},
@@ -216,6 +220,8 @@ export default {
     $props: {
       handler() {
         this.renderItems = this.products;
+        this.filteredItems = this.products;
+        this.searchItems = this.products;
       },
       deep: true,
       immediate: true,
@@ -223,8 +229,10 @@ export default {
   },
   methods: {
     //фильт товаров
-    filteredItems(items) {
-      this.renderItems = items;
+    Itemsfiltered(items, addoption) {
+      this.filteredItems = items;
+      this.addOptions = addoption;
+      this.renderedItemsUp();
     },
     openCart(e) {
       let cartButton = document.querySelector(".shopping-cart");
@@ -344,6 +352,38 @@ export default {
               });
             }
           }
+        }
+      });
+    },
+
+    Itemssearch(items) {
+      this.searchItems = items;
+      this.renderedItemsUp();
+    },
+    renderedItemsUp() {
+      let render = [];
+      for (let i = 0; i < this.searchItems.length; i++) {
+        //проходимся по первому масиву
+        for (let j = 0; j < this.filteredItems.length; j++) {
+          // ищем соотвествия во втором массиве
+          if (this.searchItems[i] === this.filteredItems[j]) {
+            render.push(this.searchItems[i]);
+          }
+        }
+      }
+      this.renderItems = render;
+         //сортируем и перерендерим мссив
+         this.renderItems = this.renderItems.toSorted((a, b) => {
+        if (this.addOptions) {
+          const priceA = parseInt(a.prices[0].replace(/\s/g, ""));
+          const priceB = parseInt(b.prices[0].replace(/\s/g, ""));
+          if (this.addOptions === "up") {
+            return priceA - priceB;
+          } else {
+            return priceB - priceA;
+          }
+        } else {
+          return;
         }
       });
     },
@@ -490,20 +530,23 @@ header {
   gap: 10px;
 }
 .search-bar {
+  border: #646363 solid 3px;
   border-radius: 8px;
   position: relative;
   width: clamp(1px, 60vw, 300px);
-  background: #ffffff;
 }
 
 .search-bar button {
+  background: #8d8c8c;
+  border-radius: 0 8px 8px 0;
   position: absolute;
-  right: 1px;
+
+  /* right: 1px; */
   top: 0;
   bottom: 0;
 }
 .input-search {
-  border-radius: 8px;
+  border-radius: 8px 0 0 8px;
   height: 30px;
   width: 90%;
 }

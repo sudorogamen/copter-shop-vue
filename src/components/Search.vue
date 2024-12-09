@@ -1,12 +1,13 @@
 <template>
 <div>
     <div class="search-bar">
-            <input type="search" placeholder="Поиск" class="input-search" />
-            <button type="button">
+        <form @submit="Itemssearch($event)" action="#">
+              <input type="search" placeholder="Поиск" class="input-search" />
+            <button type="submit">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
+                width="30"
+                height="25"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -18,6 +19,8 @@
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
               </svg>
             </button>
+        </form>
+          
           </div>
 </div>
 </template>
@@ -26,10 +29,35 @@ export default {
 components: {
  },
 data() {
- return {};
+ return {
+    searchItems:[]
+ };
  },
- props: {},
-methods: {},
+ props: {
+    Items: {
+      type: Array,
+    },},
+methods: {
+    Itemssearch(e){
+        let input = e.target.querySelector('input').value.replace(/\s/g, "").toUpperCase().trim();
+        this.searchItems = this.Items.filter((item) => {
+      let itemText = item.model.replace(/\s/g, "").toUpperCase();
+      if (!itemText.includes(input) && input) {
+        return false;
+      } else {
+        return true;
+      }
+    });
+
+   
+       
+
+    this.$emit('searchItems',this.searchItems)
+    }
+
+
+
+},
 };
 </script>
 <style scoped></style>

@@ -157,38 +157,10 @@ export default {
           }
           return true;
         });
-        if (
-          document
-            .querySelector(".products-container")
-            .querySelector(".emptyCardInRange")
-        ) {
-          document
-            .querySelector(".products-container")
-            .querySelector(".emptyCardInRange")
-            .remove();
-        }
-        if (this.filteredItems == 0) {
-          let emptySearch = document.createElement("div");
-          emptySearch.classList.add("emptyCardInRange", "error-render");
-          emptySearch.innerHTML = `Нет подходящих товаров`;
-          document.querySelector(".products-container").append(emptySearch);
-        }
+        
       }
-      //сортируем и перерендерим мссив
-      this.filteredItems = this.filteredItems.toSorted((a, b) => {
-        if (this.addOptions) {
-          const priceA = parseInt(a.prices[0].replace(/\s/g, ""));
-          const priceB = parseInt(b.prices[0].replace(/\s/g, ""));
-          if (this.addOptions === "up") {
-            return priceA - priceB;
-          } else {
-            return priceB - priceA;
-          }
-        } else {
-          return;
-        }
-      });
-      this.$emit("filteredItems", this.filteredItems);
+   
+      this.$emit("filteredItems", this.filteredItems, this.addOptions);
     },
   },
 };

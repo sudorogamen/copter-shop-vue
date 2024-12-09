@@ -1,5 +1,6 @@
 <template >
   <div  class="products-container">
+    <div v-if="Items.length == 0" class=" emptyCardInRange error-render">Нет подходящих товаров</div>
     <ul class="js-products-list">
       
         <li  class="js-product-item" :id="Item.id" v-for="Item in Items">
